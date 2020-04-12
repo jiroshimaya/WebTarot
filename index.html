@@ -48,7 +48,53 @@ Copyright © 2020 Jiro Shimaya. All rights reserved.
 <script>
 (()=>{
 	
+	const tarot_cards = (()=>{
+		const TAROT_PATH = 'tarot.txt'
+		const text = loadTextFileSync(TAROT_PATH).split('\n');
+		const head = text[0].split(',');
+		const contents = text.slice(1)
+						.map(v=>{
+							const obj = {}
+							const content = v.split'(',');
+							for(let i=0;i<header.length;i++){
+								obj[header[i]]=content[i];
+							}
+							return content
+						});
+		return contents;
+	})();
+	
 	const setTarot = () => {
+		const left_id = getRandomInt(0,tarot_cards.length-1);
+		const right_id = (()=>{
+			let id = getRandomInt(0,tarot_cards.length-1);
+			const MAX_LOOP = 20;
+			let count = 0;
+			while(id == left_id && count < MAX_LOOP){
+				id = getRandomInt(0,tarot_cards.length-1);
+				count+=1;
+			}
+			return id;
+		})();
+		for(let id in [left_id,right_id]){
+			const direction = getRandomInt(0,1);
+			const info = tarot_cards[id];
+			const name = info.number+'. '+info.name;
+			const path = info.img_file;
+			const img = $('<img>');
+			img.attr('src',path);
+			
+		}
+		const left_direction = getRandomInt(0,1);
+		const right_direction = getRandomInt(0,1);
+		
+		const left_tarot = tarot_cards[left_id];
+		const right_tarot = tarot_cards[right_id];
+		
+		const left_img = $('<img>');
+		
+		
+		
 		
 	}
 	

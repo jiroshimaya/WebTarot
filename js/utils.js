@@ -1,3 +1,7 @@
+//const zip = (array1, array2) => array1.map((_, i) => [array1[i], array2[i]]);
+//const zip = (...rows) => rows[0].map((_,c)=>rows.map(row=>row[c]));
+const zip = (...rows) => [].map.call(rows[0],(_,c)=>rows.map(row=>row[c]));
+
 //urlからパスワードを受け取る関数
 const getUrlParam = (name, url) => {
     if (!url) url = window.location.href;
