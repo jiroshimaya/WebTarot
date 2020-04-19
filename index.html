@@ -67,7 +67,7 @@ Copyright © 2020 Jiro Shimaya. All rights reserved.
 			const label = $('<label class="form-check-label">1</label>');
 			div.append(input);
 			div.append(label);
-			//div.click(()=>input.click());
+			label.click(()=>input.click());
 			return {
 				appendTo: elem=>div.appendTo(elem),
 				setLabel: name=>label.html(name),
