@@ -181,6 +181,8 @@ Copyright © 2020 Jiro Shimaya. All rights reserved.
 		img.addClass('img-fluid');
 		img.css('border','double 5px gray');
 		img.css('max-width',String(max_width)+'px');
+		img.on('mousedown mouseup',()=>false);//コピーガード
+		img.on('contextmenu',()=>false);//コピーガード
 		//divに追加してサイズを取得
 		img.appendTo(div);
 
@@ -210,11 +212,14 @@ Copyright © 2020 Jiro Shimaya. All rights reserved.
 			back.height(back.width()*pict_aspect);
 		});
 		//ちょっと不安定な可能性がある
-		img.on('load',()=>back.height(back.width()*pict_aspect));
+		img.on('load',()=>{
+			back.height(back.width()*pict_aspect);
+		});
 		//back.height(back.width()*pict_aspect);
 
-		img.hide();
+		//img.hide();
 		exp.hide();
+		
 		
 		const open = () => {
 			back.hide();
