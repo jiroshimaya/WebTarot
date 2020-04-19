@@ -33,38 +33,203 @@ Copyright © 2020 Jiro Shimaya. All rights reserved.
 	<script src="js/utils.js"></script>
 </head>
 <body>
-	<div class="container">
-		<div class="row">
-			<div class="col-12">
-				<button class="btn btn-primary">start</button>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-6 left-tarot"></div>
-			<div class="col-6 right-tarot"></div>
-		</div>
+	<div class="container main">
+		<div class="row setting"></div>
+		<div class="row btn-area"></div>
+		<div class="row tarot-img-area"></div>
+		
+	</div>
+	<div class="container fixed-bottom">
+		<p>
+			<span class="text-muted">参考（タロットのやり方）：</span>
+			<a target='_blank' href='https://tarotfun.jp/tarot-card-divination/'>https://tarotfun.jp/tarot-card-divination/</a>
+		</p>
+		<p>
+			<span class="text-muted">参考（タロットの意味）：</span>
+			<a target="_blank" href="http://www.phgenki.jp/original3.html">http://www.phgenki.jp/original3.html</a>
+		</p>
 	</div>
 </body>
 <script>
 (()=>{
+	const container = $('.container.main');
+	let setTarot_current = null;
+	(()=>{
+		const area = $('.setting');
+		const form = $('<div class="form-group col-12"></div>');
+		const exp = $('<div class="col-12"></div>');
+		
+		form.appendTo(area);
+		exp.appendTo(area);
+		
+		const getBaseRadio = () => {
+			const div = $('<div class="form-check form-check-inline"></div>');
+			const input = $('<input class="form-check-input" type="radio" name="setting-radio">');
+			const label = $('<label class="form-check-label">1</label>');
+			div.append(input);
+			div.append(label);
+			//div.click(()=>input.click());
+			return {
+				appendTo: elem=>div.appendTo(elem),
+				setLabel: name=>label.html(name),
+				click: func=>input.click(func),
+				justClick: ()=>input.click()
+			}
+		}
+		const setExp = (title,str_list) => {
+			exp.html('');
+			exp.append('<h5>'+title+'</h5>');
+			const ol = $('<ol></ol>');
+			for(let v of str_list){
+				ol.append('<li>'+v+'</li>');
+			}
+			exp.append(ol);
+		}
+		const radio_one = getBaseRadio();
+		radio_one.setLabel('ワンオラクル');
+		radio_one.click(()=>{
+			setTarot_current = setOneTarot;
+			const title = 'ワンオラクルのやり方';
+			const str_list = [
+				"占いたいこと（今日の運勢、具体的な質問など）を思い浮かべてください",
+				"カードをクリックしてめくり、意味をあなたなりに解釈してください"
+			]
+			setExp(title,str_list);
+			btnSet.click();
+		});
+		const radio_two = getBaseRadio();
+		radio_two.setLabel('ツーオラクル');
+		radio_two.click(()=>{
+			setTarot_current = setTwoTarots;
+			const title = 'ツーオラクルのやり方';
+			const str_list = [
+				"占いたいことを思い浮かべてください",
+				"左が<b>対策</b>、右が<b>結果</b>のカードです。クリックしてカードをめくり意味をあなたなりに解釈してください"
+			]
+			setExp(title,str_list);
+			btnSet.click();
+		});
+		radio_one.appendTo(form);
+		radio_two.appendTo(form);
+		$(window).on('load',()=>radio_one.justClick());
+		//setTarot_current = setOneTarot();
+		
+		
+		
+		
+	})();
+	
+	const btnSet = (()=>{
+		const row = $('.btn-area');
+		
+		const btn = $('<button></button>');
+		btn.html('もう一度占う');
+		btn.addClass('btn btn-secondary');
+		
+		row.append('<div class="col-12"></div>');
+		row.children('div').last().append(btn);
+		//row.append(btn);
+		btn.click(()=>setTarot_current());
+		return btn;
+	})();
+	
 	
 	const tarot_cards = (()=>{
 		const TAROT_PATH = 'tarot.txt'
 		const text = loadTextFileSync(TAROT_PATH).split('\n');
-		const head = text[0].split(',');
+		const header = text[0].split(',');
 		const contents = text.slice(1)
 						.map(v=>{
 							const obj = {}
-							const content = v.split'(',');
+							const content = v.split(',');
 							for(let i=0;i<header.length;i++){
 								obj[header[i]]=content[i];
 							}
-							return content
+							return obj;
 						});
 		return contents;
 	})();
 	
-	const setTarot = () => {
+	const getTarot = id => {
+		const pict_aspect = 307/216;
+		const max_width = 200;
+		
+		const direction = getRandomInt(0,1);
+		const info = tarot_cards[id];
+		const name = info.number+'. '+info.name;
+		const wiki = info.wiki;
+		const upright = info.upright;
+		const reverse = info.reverse;
+		const path = 'pict/'+info.img_file;
+		
+		//画像などを配置する領域
+		const div = $('<div class="text-center"></div>');
+		//div.appendTo(area);
+	
+		//画像情報を取得する
+		const img = $('<img>');
+		img.attr('src',path);
+		//1/2の確率で画像を反転
+		let text = upright;
+		let direction_str = '正位置';
+		if(direction == 0){
+			img.css('transform','rotate(180deg)');
+			text = reverse;
+			direction_str = '逆位置';
+		}
+		//css設定
+		img.addClass('img-fluid');
+		img.css('border','double 5px gray');
+		img.css('max-width',String(max_width)+'px');
+		//divに追加してサイズを取得
+		img.appendTo(div);
+
+		//説明テキストを配置する
+		const exp = $('<div></div>');
+		exp.append('<h5>「'+name+'」の'+direction_str+'</h5>');
+		exp.append('<p>'+text+'</p>');
+		exp.appendTo(div);
+		
+		//カードの裏面
+		const back = $('<div class="mx-auto"></div>');
+		back.css('background-color','white');
+		back.css('border','double 5px gray');
+		back.css('background-image','repeating-linear-gradient(45deg,rgba(153, 153, 153, 0.50),rgba(153, 153, 153, 0.50) 50px,rgba(0, 0, 0, 0) 0,rgba(0, 0, 0, 0) 100px),repeating-linear-gradient(315deg,rgba(153, 153, 153, 0.50),rgba(153, 153, 153, 0.50) 50px,rgba(0, 0, 0, 0) 0,rgba(0, 0, 0, 0) 100px)');
+		back.css('max-width',String(max_width)+'px');
+		back.appendTo(div);
+		
+		const setWidth = () => {
+			let width = back.width();
+			if(width > max_width)width = max_width;
+			const height = width*aspect_ratio;
+			back.width(width);
+			back.height(height);
+		}
+		//window読み込み時とサイズが変わったとき、自動でリサイズする
+		$(window).on('load resize',()=>{
+			back.height(back.width()*pict_aspect);
+		});
+		//ちょっと不安定な可能性がある
+		img.on('load',()=>back.height(back.width()*pict_aspect));
+		//back.height(back.width()*pict_aspect);
+
+		img.hide();
+		exp.hide();
+		
+		const open = () => {
+			back.hide();
+			img.show();
+			exp.show();
+		}
+		back.click(()=>open());
+		
+		return div;
+	}
+		
+	const setTwoTarots = () => {
+		const area = $('.tarot-img-area');
+		
+		area.html('');
 		const left_id = getRandomInt(0,tarot_cards.length-1);
 		const right_id = (()=>{
 			let id = getRandomInt(0,tarot_cards.length-1);
@@ -76,28 +241,24 @@ Copyright © 2020 Jiro Shimaya. All rights reserved.
 			}
 			return id;
 		})();
-		for(let id in [left_id,right_id]){
-			const direction = getRandomInt(0,1);
-			const info = tarot_cards[id];
-			const name = info.number+'. '+info.name;
-			const path = info.img_file;
-			const img = $('<img>');
-			img.attr('src',path);
-			
+		for(let id of [left_id,right_id]){			
+			//画像などを配置する領域
+			const tarot = getTarot(id);
+			tarot.addClass('col-6');
+			tarot.appendTo(area);
 		}
-		const left_direction = getRandomInt(0,1);
-		const right_direction = getRandomInt(0,1);
-		
-		const left_tarot = tarot_cards[left_id];
-		const right_tarot = tarot_cards[right_id];
-		
-		const left_img = $('<img>');
-		
-		
-		
-		
 	}
-	
+	const setOneTarot = () => {
+		const area = $('.tarot-img-area');		
+		area.html('');
+		const id = getRandomInt(0,tarot_cards.length-1);
+		const tarot = getTarot(id);
+		area.append('<div class="col-3"></div>');
+		tarot.addClass('col-6');
+		tarot.appendTo(area);
+		area.append('<div class="col-3"></div>');		
+	}
+	setOneTarot();
 })();
 
 </script>
