@@ -39,15 +39,14 @@ Copyright © 2020 Jiro Shimaya. All rights reserved.
 		<div class="row tarot-img-area"></div>
 		
 	</div>
-	<div class="container fixed-bottom">
-		<p>
-			<span class="text-muted">参考（タロットのやり方）：</span>
-			<a target='_blank' href='https://tarotfun.jp/tarot-card-divination/'>https://tarotfun.jp/tarot-card-divination/</a>
-		</p>
-		<p>
-			<span class="text-muted">参考（タロットの意味）：</span>
-			<a target="_blank" href="http://www.phgenki.jp/original3.html">http://www.phgenki.jp/original3.html</a>
-		</p>
+	<div class="container">
+		<span>参考ページ</span>
+		<br>
+		<span>やり方：</span>
+		<a target='_blank' href='https://tarotfun.jp/tarot-card-divination/'>https://tarotfun.jp/tarot-card-divination/</a>
+		<br>
+		<span>意味：</span>
+		<a target="_blank" href="http://www.phgenki.jp/original3.html">http://www.phgenki.jp/original3.html</a>
 	</div>
 </body>
 <script>
@@ -163,7 +162,10 @@ Copyright © 2020 Jiro Shimaya. All rights reserved.
 		const path = 'pict/'+info.img_file;
 		
 		//画像などを配置する領域
-		const div = $('<div class="text-center"></div>');
+		const div_all = $('<div class="text-center"></div>');
+		const div = $('<div class="mx-auto"></div>');
+		div.css('max-width',String(max_width)+'px');
+		div.appendTo(div_all);
 		//div.appendTo(area);
 	
 		//画像情報を取得する
@@ -180,7 +182,7 @@ Copyright © 2020 Jiro Shimaya. All rights reserved.
 		//css設定
 		img.addClass('img-fluid');
 		img.css('border','double 5px gray');
-		img.css('max-width',String(max_width)+'px');
+		//img.css('max-width',String(max_width)+'px');
 		img.on('mousedown mouseup',()=>false);//コピーガード
 		img.on('contextmenu',()=>false);//コピーガード
 		//divに追加してサイズを取得
@@ -190,14 +192,14 @@ Copyright © 2020 Jiro Shimaya. All rights reserved.
 		const exp = $('<div></div>');
 		exp.append('<h5>「'+name+'」の'+direction_str+'</h5>');
 		exp.append('<p>'+text+'</p>');
-		exp.appendTo(div);
+		exp.appendTo(div_all);
 		
 		//カードの裏面
 		const back = $('<div class="mx-auto"></div>');
 		back.css('background-color','white');
 		back.css('border','double 5px gray');
 		back.css('background-image','repeating-linear-gradient(45deg,rgba(153, 153, 153, 0.50),rgba(153, 153, 153, 0.50) 50px,rgba(0, 0, 0, 0) 0,rgba(0, 0, 0, 0) 100px),repeating-linear-gradient(315deg,rgba(153, 153, 153, 0.50),rgba(153, 153, 153, 0.50) 50px,rgba(0, 0, 0, 0) 0,rgba(0, 0, 0, 0) 100px)');
-		back.css('max-width',String(max_width)+'px');
+		//back.css('max-width',String(max_width)+'px');
 		back.appendTo(div);
 		
 		//window読み込み時とサイズが変わったとき、自動でリサイズする
@@ -221,7 +223,7 @@ Copyright © 2020 Jiro Shimaya. All rights reserved.
 		}
 		back.click(()=>open());
 		
-		return div;
+		return div_all;
 	}
 		
 	const setTwoTarots = () => {
@@ -251,10 +253,10 @@ Copyright © 2020 Jiro Shimaya. All rights reserved.
 		area.html('');
 		const id = getRandomInt(0,tarot_cards.length-1);
 		const tarot = getTarot(id);
-		area.append('<div class="col-3"></div>');
-		tarot.addClass('col-6');
+		//area.append('<div class="col-sm-3 d-none"></div>');
+		tarot.addClass('col-12');
 		tarot.appendTo(area);
-		area.append('<div class="col-3"></div>');		
+		//area.append('<div class="col-sm-3 d-none"></div>');		
 	}
 	setOneTarot();
 })();
