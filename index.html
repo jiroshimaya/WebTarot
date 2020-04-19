@@ -200,13 +200,6 @@ Copyright © 2020 Jiro Shimaya. All rights reserved.
 		back.css('max-width',String(max_width)+'px');
 		back.appendTo(div);
 		
-		const setWidth = () => {
-			let width = back.width();
-			if(width > max_width)width = max_width;
-			const height = width*aspect_ratio;
-			back.width(width);
-			back.height(height);
-		}
 		//window読み込み時とサイズが変わったとき、自動でリサイズする
 		$(window).on('load resize',()=>{
 			back.height(back.width()*pict_aspect);
@@ -217,7 +210,7 @@ Copyright © 2020 Jiro Shimaya. All rights reserved.
 		});
 		//back.height(back.width()*pict_aspect);
 
-		//img.hide();
+		img.hide();
 		exp.hide();
 		
 		
