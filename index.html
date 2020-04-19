@@ -149,6 +149,8 @@ Copyright © 2020 Jiro Shimaya. All rights reserved.
 		return contents;
 	})();
 	
+	let current_width = null;
+	
 	const getTarot = id => {
 		const pict_aspect = 307/216;
 		const max_width = 200;
@@ -205,12 +207,15 @@ Copyright © 2020 Jiro Shimaya. All rights reserved.
 		//window読み込み時とサイズが変わったとき、自動でリサイズする
 		$(window).on('load resize',()=>{
 			back.height(back.width()*pict_aspect);
+			current_width = back.width();
 		});
 		//ちょっと不安定な可能性がある
 		img.on('load',()=>{
 			back.height(back.width()*pict_aspect);
+			current_width = back.width();
 		});
-		back.height(back.width()*pict_aspect);
+		if(current_width !== null)
+			back.height(back.width()*pict_aspect);
 		//back.height(back.width()*pict_aspect);
 
 		img.hide();
